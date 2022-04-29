@@ -19,7 +19,7 @@ type EventManagementConfiguration struct {
 }
 
 // Creates the default device management configuration
-func NewDeviceManagementConfiguration() *EventManagementConfiguration {
+func NewEventManagementConfiguration() *EventManagementConfiguration {
 	return &EventManagementConfiguration{
 		RdbConfiguration: config.MicroserviceRdbConfiguration{
 			SqlDebug: true,
