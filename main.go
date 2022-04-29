@@ -13,9 +13,9 @@ import (
 	gql "github.com/graph-gophers/graphql-go"
 
 	dmconfig "github.com/devicechain-io/dc-device-management/config"
-	"github.com/devicechain-io/dc-device-management/model"
 	"github.com/devicechain-io/dc-event-management/config"
 	"github.com/devicechain-io/dc-event-management/graphql"
+	"github.com/devicechain-io/dc-event-management/model"
 	"github.com/devicechain-io/dc-microservice/core"
 	gqlcore "github.com/devicechain-io/dc-microservice/graphql"
 	kcore "github.com/devicechain-io/dc-microservice/kafka"

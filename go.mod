@@ -6,7 +6,9 @@ require (
 	github.com/devicechain-io/dc-device-management v0.0.0
 	github.com/devicechain-io/dc-k8s v0.0.0
 	github.com/devicechain-io/dc-microservice v0.0.0
+	github.com/go-gormigrate/gormigrate/v2 v2.0.0
 	github.com/graph-gophers/graphql-go v1.3.0
+	gorm.io/gorm v1.23.3
 )
 
 require (
@@ -19,7 +21,6 @@ require (
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/friendsofgo/graphiql v0.2.2 // indirect
-	github.com/go-gormigrate/gormigrate/v2 v2.0.0 // indirect
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/go-redis/cache/v8 v8.4.3 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
@@ -80,7 +81,6 @@ require (
 	gorm.io/datatypes v1.0.6 // indirect
 	gorm.io/driver/mysql v1.3.2 // indirect
 	gorm.io/driver/postgres v1.3.1 // indirect
-	gorm.io/gorm v1.23.3 // indirect
 	k8s.io/api v0.23.5 // indirect
 	k8s.io/apimachinery v0.23.5 // indirect
 	k8s.io/cli-runtime v0.23.5 // indirect
