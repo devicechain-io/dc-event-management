@@ -91,7 +91,8 @@ func afterMicroserviceInitialized(ctx context.Context) error {
 
 	// Create and initialize rdb manager.
 	rdbcb := core.NewNoOpLifecycleCallbacks()
-	RdbManager = rdb.NewRdbManager(Microservice, rdbcb, model.Migrations, Configuration.RdbConfiguration)
+	RdbManager = rdb.NewRdbManager(Microservice, rdbcb, model.Migrations,
+		Microservice.InstanceConfiguration.Persistence.Tsdb, Configuration.TsdbConfiguration)
 	err = RdbManager.Initialize(ctx)
 	if err != nil {
 		return err

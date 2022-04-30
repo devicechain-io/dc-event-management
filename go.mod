@@ -16,7 +16,6 @@ require (
 	github.com/bsm/redislock v0.7.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/devicechain-io/dc-event-sources v0.0.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
 	github.com/fatih/color v1.13.0 // indirect
@@ -97,7 +96,5 @@ require (
 replace github.com/devicechain-io/dc-k8s v0.0.0 => ../dc-k8s
 
 replace github.com/devicechain-io/dc-device-management v0.0.0 => ../dc-device-management
-
-replace github.com/devicechain-io/dc-event-sources v0.0.0 => ../dc-event-sources
 
 replace github.com/devicechain-io/dc-microservice v0.0.0 => ../dc-microservice

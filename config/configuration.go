@@ -15,13 +15,13 @@ const (
 )
 
 type EventManagementConfiguration struct {
-	RdbConfiguration config.MicroserviceRdbConfiguration
+	TsdbConfiguration config.MicroserviceDatastoreConfiguration
 }
 
 // Creates the default device management configuration
 func NewEventManagementConfiguration() *EventManagementConfiguration {
 	return &EventManagementConfiguration{
-		RdbConfiguration: config.MicroserviceRdbConfiguration{
+		TsdbConfiguration: config.MicroserviceDatastoreConfiguration{
 			SqlDebug: true,
 		},
 	}
