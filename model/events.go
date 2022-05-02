@@ -6,7 +6,26 @@
 
 package model
 
+import (
+	"time"
+
+	esmodel "github.com/devicechain-io/dc-event-sources/model"
+)
+
 // Event with token references resolved and info from assignment merged.
 type Event struct {
-	Id string
+	Source          string
+	AltId           *string
+	DeviceId        uint `gorm:"not null"`
+	AssignmentId    uint `gorm:"not null"`
+	DeviceGroupId   *uint
+	CustomerId      *uint
+	CustomerGroupId *uint
+	AreaId          *uint
+	AreaGroupId     *uint
+	AssetId         *uint
+	AssetGroupId    *uint
+	OccurredTime    time.Time `gorm:"not null"`
+	ProcessedTime   time.Time
+	EventType       esmodel.EventType
 }

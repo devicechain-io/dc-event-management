@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/devicechain-io/dc-device-management v0.0.0
+	github.com/devicechain-io/dc-event-sources v0.0.0
 	github.com/devicechain-io/dc-k8s v0.0.0
 	github.com/devicechain-io/dc-microservice v0.0.0
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
@@ -96,5 +97,7 @@ require (
 replace github.com/devicechain-io/dc-k8s v0.0.0 => ../dc-k8s
 
 replace github.com/devicechain-io/dc-device-management v0.0.0 => ../dc-device-management
+
+replace github.com/devicechain-io/dc-event-sources v0.0.0 => ../dc-event-sources
 
 replace github.com/devicechain-io/dc-microservice v0.0.0 => ../dc-microservice
