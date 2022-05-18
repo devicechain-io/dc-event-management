@@ -16,6 +16,7 @@ import (
 	"github.com/devicechain-io/dc-event-management/config"
 	"github.com/devicechain-io/dc-event-management/graphql"
 	"github.com/devicechain-io/dc-event-management/model"
+	"github.com/devicechain-io/dc-event-management/processor"
 	"github.com/devicechain-io/dc-microservice/core"
 	gqlcore "github.com/devicechain-io/dc-microservice/graphql"
 	kcore "github.com/devicechain-io/dc-microservice/kafka"
@@ -30,7 +31,12 @@ var (
 	GraphQLManager *gqlcore.GraphQLManager
 	KakfaManager   *kcore.KafkaManager
 
-	ResolvedEventsReader kcore.KafkaReader
+	Api *model.Api
+
+	ResolvedEventsReader      kcore.KafkaReader
+	EventPersistenceProcessor *processor.EventPersistenceProcessor
+	PersistedEventsWriter     kcore.KafkaWriter
+	FailedEventsWriter        kcore.KafkaWriter
 )
 
 func main() {
@@ -78,6 +84,27 @@ func createKafkaComponents(kmgr *kcore.KafkaManager) error {
 	}
 	ResolvedEventsReader = revents
 
+	// Add and initialize persisted events writer.
+	pevents, err := kmgr.NewWriter(kmgr.NewScopedTopic(config.KAFKA_TOPIC_PERSISTED_EVENTS))
+	if err != nil {
+		return err
+	}
+	PersistedEventsWriter = pevents
+
+	// Add and initialize failed events writer.
+	fevents, err := kmgr.NewWriter(kmgr.NewScopedTopic(dmconfig.KAFKA_TOPIC_FAILED_EVENTS))
+	if err != nil {
+		return err
+	}
+	FailedEventsWriter = fevents
+
+	// Add and initialize inbound events processor.
+	EventPersistenceProcessor = processor.NewEventPersistenceProcessor(Microservice, ResolvedEventsReader,
+		PersistedEventsWriter, FailedEventsWriter, core.NewNoOpLifecycleCallbacks(), Api)
+	err = EventPersistenceProcessor.Initialize(context.Background())
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -100,6 +127,9 @@ func afterMicroserviceInitialized(ctx context.Context) error {
 
 	// Create RDB caches.
 	model.InitializeCaches(RdbManager)
+
+	// Wrap api around rdb manager.
+	Api = model.NewApi(RdbManager)
 
 	// Create and initialize kafka manager.
 	KakfaManager = kcore.NewKafkaManager(Microservice, core.NewNoOpLifecycleCallbacks(), createKafkaComponents)

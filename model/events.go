@@ -7,6 +7,7 @@
 package model
 
 import (
+	"database/sql"
 	"time"
 
 	esmodel "github.com/devicechain-io/dc-event-sources/model"
@@ -14,9 +15,10 @@ import (
 
 // Event with token references resolved and info from assignment merged.
 type Event struct {
+	DeviceId        uint      `gorm:"primaryKey"`
+	OccurredTime    time.Time `gorm:"primaryKey"`
 	Source          string
 	AltId           *string
-	DeviceId        uint `gorm:"not null"`
 	AssignmentId    uint `gorm:"not null"`
 	DeviceGroupId   *uint
 	CustomerId      *uint
@@ -25,7 +27,42 @@ type Event struct {
 	AreaGroupId     *uint
 	AssetId         *uint
 	AssetGroupId    *uint
-	OccurredTime    time.Time `gorm:"not null"`
 	ProcessedTime   time.Time
-	EventType       esmodel.EventType
+	EventType       esmodel.EventType `gorm:"not null"`
+}
+
+// Location event fields.
+type LocationEvent struct {
+	DeviceId     uint            `gorm:"not null"`
+	OccurredTime time.Time       `gorm:"not null"`
+	Event        Event           `gorm:"foreignKey:DeviceId,OccurredTime;References:DeviceId,OccurredTime"`
+	Latitude     sql.NullFloat64 `gorm:"type:decimal(10,8);"`
+	Longitude    sql.NullFloat64 `gorm:"type:decimal(11,8);"`
+	Elevation    sql.NullFloat64 `gorm:"type:decimal(10,8);"`
+}
+
+// Information required to create a location event.
+type LocationEventCreateRequest struct {
+	Event
+	Latitude  *float64
+	Longitude *float64
+	Elevation *float64
+}
+
+// Measurement event fields.
+type MeasurementEvent struct {
+	DeviceId     uint            `gorm:"not null"`
+	OccurredTime time.Time       `gorm:"not null"`
+	Event        Event           `gorm:"foreignKey:DeviceId,OccurredTime;References:DeviceId,OccurredTime"`
+	Latitude     sql.NullFloat64 `gorm:"type:decimal(10,8);"`
+	Longitude    sql.NullFloat64 `gorm:"type:decimal(11,8);"`
+	Elevation    sql.NullFloat64 `gorm:"type:decimal(10,8);"`
+}
+
+// Information required to create a measurement event.
+type MeasurementEventCreateRequest struct {
+	Event
+	Latitude  *float64
+	Longitude *float64
+	Elevation *float64
 }

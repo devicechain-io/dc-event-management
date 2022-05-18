@@ -19,11 +19,22 @@ func NewInitialSchema() *gormigrate.Migration {
 	return &gormigrate.Migration{
 		ID: "20220420000000",
 		Migrate: func(tx *gorm.DB) error {
+			// Location event fields.
+			type LocationEvent struct {
+				DeviceId     uint      `gorm:"not null"`
+				OccurredTime time.Time `gorm:"not null"`
+				Event        Event     `gorm:"foreignKey:DeviceId,OccurredTime;References:DeviceId,OccurredTime"`
+				Latitude     float64   `gorm:"type:decimal(10,8);"`
+				Longitude    float64   `gorm:"type:decimal(11,8);"`
+				Elevation    float64   `gorm:"type:decimal(10,8);"`
+			}
+
 			// Base event fields.
 			type Event struct {
+				DeviceId        uint      `gorm:"primaryKey"`
+				OccurredTime    time.Time `gorm:"primaryKey"`
 				Source          string
 				AltId           *string
-				DeviceId        uint `gorm:"not null"`
 				AssignmentId    uint `gorm:"not null"`
 				DeviceGroupId   *uint
 				CustomerId      *uint
@@ -32,12 +43,11 @@ func NewInitialSchema() *gormigrate.Migration {
 				AreaGroupId     *uint
 				AssetId         *uint
 				AssetGroupId    *uint
-				OccurredTime    time.Time `gorm:"not null"`
 				ProcessedTime   time.Time
-				EventType       esmodel.EventType
+				EventType       esmodel.EventType `gorm:"not null"`
 			}
 
-			err := tx.AutoMigrate(&Event{})
+			err := tx.AutoMigrate(&Event{}, &LocationEvent{})
 			if err != nil {
 				return err
 			}
