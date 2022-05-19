@@ -78,9 +78,7 @@ func (eproc *EventPersistenceProcessor) ProcessFailedEvent(ctx context.Context) 
 			Value: bytes,
 		}
 		err = eproc.FailedEventsWriter.WriteMessages(ctx, msg)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to send failed event message to kafka")
-		}
+		eproc.FailedEventsWriter.HandleResponse(err)
 		return false
 	} else {
 		return true
@@ -95,7 +93,7 @@ func (eproc *EventPersistenceProcessor) OnInvalidEvent(err error, msg kafka.Mess
 }
 
 // Called when a message can not be persisted.
-func (eproc *EventPersistenceProcessor) onFailedEvent(reason uint, event dmodel.ResolvedEvent, perr error) {
+func (eproc *EventPersistenceProcessor) OnFailedEvent(reason uint, event dmodel.ResolvedEvent, perr error) {
 	// Marshal event message to protobuf.
 	bytes, err := proto.MarshalResolvedEvent(&event)
 	if err != nil {
@@ -105,10 +103,6 @@ func (eproc *EventPersistenceProcessor) onFailedEvent(reason uint, event dmodel.
 			"event could not be processed", perr, bytes)
 		eproc.failed <- *failed
 	}
-}
-
-func (eproc *EventPersistenceProcessor) MarshalEvent(event interface{}) ([]byte, error) {
-	return nil, nil
 }
 
 // Handle case where event was successfully persisted.
@@ -121,9 +115,7 @@ func (eproc *EventPersistenceProcessor) ProcessPersistedEvent(ctx context.Contex
 			Value: bytes,
 		}
 		err := eproc.PersistedEventsWriter.WriteMessages(ctx, msg)
-		if err != nil {
-			log.Error().Err(err).Msg("unable to send persisted event message to kafka")
-		}
+		eproc.PersistedEventsWriter.HandleResponse(err)
 		return false
 	} else {
 		return true
@@ -142,7 +134,7 @@ func (eproc *EventPersistenceProcessor) initializeEventPersistenceWorkers(ctx co
 	eproc.workers = make([]*EventPersistenceWorker, 0)
 	for w := 1; w <= WORKER_COUNT; w++ {
 		resolver := NewEventPersistenceWorker(w, eproc.Api, eproc.messages,
-			eproc.OnInvalidEvent, eproc.OnPersistedEvent, eproc.onFailedEvent)
+			eproc.OnInvalidEvent, eproc.OnPersistedEvent, eproc.OnFailedEvent)
 		eproc.workers = append(eproc.workers, resolver)
 		go resolver.Process(ctx)
 	}
@@ -182,7 +174,7 @@ func (eproc *EventPersistenceProcessor) ProcessMessage(ctx context.Context) bool
 			log.Info().Msg("Detected EOF on resolved events stream")
 			return true
 		} else {
-			log.Error().Err(err).Msg("error reading resolved event message")
+			eproc.ResolvedEventsReader.HandleResponse(err)
 		}
 	} else {
 		eproc.messages <- msg

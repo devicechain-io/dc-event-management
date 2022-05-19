@@ -175,13 +175,25 @@ func afterMicroserviceStarted(ctx context.Context) error {
 		return err
 	}
 
+	// Start event persistence processor.
+	err = EventPersistenceProcessor.Start(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // Called before microservice has been stopped.
 func beforeMicroserviceStopped(ctx context.Context) error {
+	// Stop event persistence processor.
+	err := EventPersistenceProcessor.Stop(ctx)
+	if err != nil {
+		return err
+	}
+
 	// Stop kafka manager.
-	err := KakfaManager.Stop(ctx)
+	err = KakfaManager.Stop(ctx)
 	if err != nil {
 		return err
 	}
