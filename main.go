@@ -146,7 +146,7 @@ func afterMicroserviceInitialized(ctx context.Context) error {
 	// Create and initialize graphql manager.
 	gqlcb := core.NewNoOpLifecycleCallbacks()
 
-	schema := gqlcore.CommonTypes + graphql.SchemaContent
+	schema := graphql.SchemaContent
 	parsed := gql.MustParseSchema(schema, &graphql.SchemaResolver{})
 	GraphQLManager = gqlcore.NewGraphQLManager(Microservice, gqlcb, *parsed, providers)
 	err = GraphQLManager.Initialize(ctx)

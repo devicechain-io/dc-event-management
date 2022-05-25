@@ -15,11 +15,12 @@ import (
 
 // Event with token references resolved and info from assignment merged.
 type Event struct {
-	DeviceId        uint      `gorm:"primaryKey"`
-	OccurredTime    time.Time `gorm:"primaryKey"`
+	DeviceId        uint
+	EventType       esmodel.EventType
+	OccurredTime    time.Time
 	Source          string
-	AltId           *string
-	AssignmentId    uint `gorm:"not null"`
+	AltId           sql.NullString
+	AssignmentId    uint
 	DeviceGroupId   *uint
 	CustomerId      *uint
 	CustomerGroupId *uint
@@ -28,17 +29,17 @@ type Event struct {
 	AssetId         *uint
 	AssetGroupId    *uint
 	ProcessedTime   time.Time
-	EventType       esmodel.EventType `gorm:"not null"`
 }
 
 // Location event fields.
 type LocationEvent struct {
-	DeviceId     uint            `gorm:"not null"`
-	OccurredTime time.Time       `gorm:"not null"`
-	Event        Event           `gorm:"foreignKey:DeviceId,OccurredTime;References:DeviceId,OccurredTime"`
-	Latitude     sql.NullFloat64 `gorm:"type:decimal(10,8);"`
-	Longitude    sql.NullFloat64 `gorm:"type:decimal(11,8);"`
-	Elevation    sql.NullFloat64 `gorm:"type:decimal(10,8);"`
+	DeviceId     uint              `gorm:"not null"`
+	EventType    esmodel.EventType `gorm:"not null"`
+	OccurredTime time.Time         `gorm:"not null"`
+	Event        Event             `gorm:"foreignKey:DeviceId,EventType,OccurredTime;References:DeviceId,EventType,OccurredTime"`
+	Latitude     sql.NullFloat64   `gorm:"type:decimal(10,8);"`
+	Longitude    sql.NullFloat64   `gorm:"type:decimal(11,8);"`
+	Elevation    sql.NullFloat64   `gorm:"type:decimal(10,8);"`
 }
 
 // Information required to create a location event.

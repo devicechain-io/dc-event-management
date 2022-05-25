@@ -14,7 +14,7 @@ import (
 	"github.com/devicechain-io/dc-microservice/rdb"
 )
 
-//go:embed schema.gql
+//go:embed schema.graphql
 var SchemaContent string
 
 type SchemaResolver struct{}

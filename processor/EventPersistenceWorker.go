@@ -16,6 +16,7 @@ import (
 	dmproto "github.com/devicechain-io/dc-device-management/proto"
 	"github.com/devicechain-io/dc-event-management/model"
 	esmodel "github.com/devicechain-io/dc-event-sources/model"
+	"github.com/devicechain-io/dc-microservice/rdb"
 	"github.com/rs/zerolog/log"
 	"github.com/segmentio/kafka-go"
 )
@@ -104,7 +105,7 @@ func (ep *EventPersistenceWorker) PersistEvent(ctx context.Context, event dmmode
 		DeviceId:        event.DeviceId,
 		OccurredTime:    event.OccurredTime,
 		Source:          event.Source,
-		AltId:           event.AltId,
+		AltId:           rdb.NullStrOf(event.AltId),
 		AssignmentId:    event.AssignmentId,
 		DeviceGroupId:   event.DeviceGroupId,
 		AssetId:         event.AssetId,
